@@ -30,3 +30,8 @@ Cara menampilkan menu : zhelp/zmenu
 [`BAILEYS`](https://github.com/adiwajshing/Baileys) 
 [`Hafizh`](https://github.com/HAFizh-15) 
 [`MHANKBARBAR`](https://github.com/MhankBarBar)
+
+
+## NOTE! 
+Jika ada bug hubungi saya[`WhatsApp`](wa.me/6285793432434) 
+Jangan lupa kasih bintang :) 
