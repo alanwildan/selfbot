@@ -16,8 +16,8 @@ $ pkg install update && pkg install upgrade
 $ pkg install ffmpeg && pkg install bash && pkg install nodejs
 $ git clone https://github.com/alanwildan/selfbot
 $ cd selfbot
-$ ls
 $ bash install.sh
+$ npm audit fix
 $ node index.js
 
 Tinggal Scan Dah :)
