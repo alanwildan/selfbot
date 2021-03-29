@@ -1,5 +1,8 @@
 # selfbot WhatsApp
 
+# Setting
+
+[`here`](https://github.com/alanwildan/selfbot/blob/main/src/settings.json)
 
 # INSTALL
 
