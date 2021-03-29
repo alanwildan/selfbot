@@ -17,7 +17,6 @@ const moment = require('moment-timezone')
 const { exec } = require('child_process')
 const fetch = require('node-fetch')
 const ffmpeg = require('fluent-ffmpeg')
-const { removeBackgroundFromImageFile } = require('remove.bg')
 const setting = JSON.parse(fs.readFileSync('./src/settings.json'))
 prefix = setting.prefix
 blocked = []
