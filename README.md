@@ -1,7 +1,7 @@
 # selfbot WhatsApp
 
 
-#INSTALL
+# INSTALL
 
 ```sh
 $ termux-setup-storage
@@ -15,5 +15,8 @@ $ node index.js
 
 Tinggal Scan Dah :)
 
-Cara menampilkan menu : zhelp
-```
+Cara menampilkan menu : zhelp/zmenu
+
+
+## THANKS TO
+* [`MHANKBARBAR`](https://github.com/MhankBarBar/)
