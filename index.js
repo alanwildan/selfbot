@@ -240,9 +240,11 @@ runtime = process.uptime()
 ┣ ❏ ${prefix}bass
 ┣ ❏ ${prefix}toptt
 ┃
-┣◪ 𝗠𝗔𝗞𝗘𝗥 
+┣◪ 𝗠𝗘𝗗𝗜𝗔
 ┃
-┣ ❏ ${prefix}sticker
+┣ ❏ ${prefix}sticker [gambar/video/gif]
+┣ ❏ ${prefix}stik [link]
+┣ ❏ ${prefix}caristik [query]
 ┣ ❏ ${prefix}ttp [text]
 ┣ ❏ ${prefix}attp [text]
 ┣ ❏ ${prefix}take
