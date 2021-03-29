@@ -1,5 +1,5 @@
 {
-  "name": "wabot",
+  "name": "selfbot",
   "version": "1.0.0",
   "description": "Iya bang",
   "main": "index.js",
@@ -38,7 +38,9 @@
     "performance-now": "^2.1.0",
     "qrcode-terminal": "^0.12.0",
     "request": "^2.88.2",
+    "remove.bg": "^1.3.0",
     "spinnies": "^0.5.1",
+    "tiktok-scraper": "^1.4.7"
     "webp-converter": "^2.3.2"
   }
 }
