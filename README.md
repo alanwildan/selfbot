@@ -1,4 +1,5 @@
-# selfbot WhatsApp
+## <img src="https://github.com/TheDudeThatCode/TheDudeThatCode/blob/master/Assets/Hi.gif" width="29px"> SELFBOT
+<p align="center">
 
 # Setting
 
