@@ -21,7 +21,6 @@ $ bash install.sh
 $ node index.js
 
 Tinggal Scan Dah :)
-
 Cara menampilkan menu : zhelp/zmenu
 ```
 
