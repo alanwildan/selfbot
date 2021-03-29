@@ -16,7 +16,9 @@ $ node index.js
 Tinggal Scan Dah :)
 
 Cara menampilkan menu : zhelp/zmenu
+```
 
 
 ## THANKS TO
-* [`MHANKBARBAR`](https://github.com/MhankBarBar/)
+[`Hafizh`](https://github.com/HAFizh-15) 
+[`MHANKBARBAR`](https://github.com/MhankBarBar)
