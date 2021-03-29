@@ -20,5 +20,7 @@ Cara menampilkan menu : zhelp/zmenu
 
 
 ## THANKS TO
+
+[`BAILEYS`](https://github.com/adiwajshing/Baileys) 
 [`Hafizh`](https://github.com/HAFizh-15) 
 [`MHANKBARBAR`](https://github.com/MhankBarBar)
