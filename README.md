@@ -6,8 +6,8 @@
 
 # Setting
 
-Setting apikey,number, & prefix[`here`](https://github.com/alanwildan/selfbot/blob/main/src/settings.json)
-Setting thumbnile freply [`here`](https://github.com/alanwildan/selfbot/tree/main/image) 
+*Setting apikey,number, & prefix[`here`](https://github.com/alanwildan/selfbot/blob/main/src/settings.json)
+*Setting thumbnile freply [`here`](https://github.com/alanwildan/selfbot/tree/main/image) 
 
 # INSTALL
 
@@ -28,11 +28,11 @@ Cara menampilkan menu : zhelp/zmenu
 
 ## THANKS TO
 
-[`BAILEYS`](https://github.com/adiwajshing/Baileys) 
-[`Hafizh`](https://github.com/HAFizh-15) 
-[`MHANKBARBAR`](https://github.com/MhankBarBar)
+*[`ADIWAJSHING`](https://github.com/adiwajshing/Baileys) 
+*[`Hafizh`](https://github.com/HAFizh-15) 
+*[`MHANKBARBAR`](https://github.com/MhankBarBar)
 
 
 ## NOTE! 
-Jika ada bug hubungi saya[`WhatsApp`](https://api.whatsapp.com/send?phone=6285793432434) 
-Jangan lupa kasih bintang :) 
+*Jika ada bug hubungi saya[`WhatsApp`](https://api.whatsapp.com/send?phone=6285793432434) 
+*Jangan lupa kasih bintang :) 
