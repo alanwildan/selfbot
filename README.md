@@ -19,7 +19,7 @@ $ git clone https://github.com/alanwildan/selfbot
 $ cd selfbot
 $ bash install.sh
 $ npm audit fix
-$ node index.js
+$ npm start
 
 Tinggal Scan Qr Di WhatsApp Mu
 Cara menampilkan menu : zhelp/zmenu
