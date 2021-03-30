@@ -24,7 +24,7 @@ const vcard = 'BEGIN:VCARD\n'
             + 'VERSION:3.0\n' 
             + 'FN:ME? \n' 
             + 'ORG:ME? .;\n' 
-            + 'TEL;type=CELL;type=VOICE;waid=6285793432434:+62 857-9343-2434\n' // NOMER HP LU
+            + 'TEL;type=CELL;type=VOICE;waid=628nomerlu:+62 000-0000-0000\n' // Jangan ubah pola nya
             + 'END:VCARD'
 
 const setiker = JSON.parse(fs.readFileSync('./src/stik.json'))
