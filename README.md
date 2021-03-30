@@ -6,8 +6,8 @@
 
 # Setting
 
-* Setting apikey,number, & prefix[`here`](https://github.com/alanwildan/selfbot/blob/main/src/settings.json)
-* Setting thumbnile freply [`here`](https://github.com/alanwildan/selfbot/tree/main/image) 
+* Setting apikey,number, & prefix : [`here`](https://github.com/alanwildan/selfbot/blob/main/src/settings.json)
+* Setting thumbnile freply : [`here`](https://github.com/alanwildan/selfbot/tree/main/image) 
 
 # INSTALL
 
