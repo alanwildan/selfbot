@@ -1,3 +1,6 @@
+///thanks bro udah mampir
+///makasih udah makai sc gw ya
+
 const {
     WAConnection,
     MessageType,
