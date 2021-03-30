@@ -14,14 +14,14 @@
 ```sh
 $ termux-setup-storage
 $ pkg install update && pkg install upgrade
-$ pkg install ffmpeg && pkg install bash && pkg install nodejs
+$ pkg install git -y && pkg install ffmpeg -y && pkg install bash -y && pkg install nodejs-y
 $ git clone https://github.com/alanwildan/selfbot
 $ cd selfbot
 $ bash install.sh
 $ npm audit fix
 $ node index.js
 
-Tinggal Scan Dah :)
+Tinggal Scan Qr Di WhatsApp Mu
 Cara menampilkan menu : zhelp/zmenu
 ```
 
