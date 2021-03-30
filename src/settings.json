@@ -1,7 +1,7 @@
 {
 	"prefix": "z",
 	"ownerNumber": "628nomerlu",
-	"lol": "Your_Apikey",  //get on http://lolhuman.herokuapp.com
-	"vinz": "apivinz", 
+	"lol": "Your_Apikey",   //get on http://lolhuman.herokuapp.com
+	"vinz": "apivinz",     ///
 	"apiKey": "ZPAYFSWV"  //get on https://leyscoders-api.herokuapp.com
 }
