@@ -6,12 +6,12 @@
 
 # Setting
 
-* Setting apikey, number, & prefix : [`here`](https://github.com/alanwildan/selfbot/blob/main/src/settings.json)
-* Setting thumbnile freply : [`here`](https://github.com/alanwildan/selfbot/tree/main/image) 
+* Setting apikey, number, & prefix : [`click`](https://github.com/alanwildan/selfbot/blob/main/src/settings.json)
+* Setting thumbnile freply : [`click`](https://github.com/alanwildan/selfbot/tree/main/image) 
 
 # INSTALL
 
-```sh
+```js
 $ termux-setup-storage
 $ pkg install update && pkg install upgrade
 $ pkg install git -y && pkg install ffmpeg -y && pkg install bash -y && pkg install nodejs-y
