@@ -1,7 +1,6 @@
-///thanks bro udah mampir
-///makasih udah makai sc gw ya
+//makasih bro udah make sc gw
 
-const {
+ {
     WAConnection,
     MessageType,
     Presence,
@@ -15,20 +14,28 @@ const { wait, simih, getBuffer, h2k, generateMessageID, getGroupAdmins, getRando
 const { fetchJson, fetchText } = require('./lib/fetcher')
 const { recognize } = require('./lib/ocr')
 const fs = require('fs')
+const emojiUnicode = require('emoji-unicode') 
+const { removeBackgroundFromImageFile } = require('remove.bg')
 const imageToBase64 = require('image-to-base64')
 const moment = require('moment-timezone')
 const { exec } = require('child_process')
 const fetch = require('node-fetch')
 const ffmpeg = require('fluent-ffmpeg')
 const setting = JSON.parse(fs.readFileSync('./src/settings.json'))
-prefix = setting.prefix
+const prefix = setting.prefix
+const exif = setting.exif
+const apikey = setting.apiKey // get on https://leyscoders-api.herokuapp.com
+const lolkey = setting.lol // get on http://lolhuman.herokuapp.com
+const vinz = setting.vinz //get on https://api.zeks.xyz
 blocked = []
 const vcard = 'BEGIN:VCARD\n' 
             + 'VERSION:3.0\n' 
             + 'FN:ME? \n' 
-            + 'ORG:ME? .;\n' 
-            + 'TEL;type=CELL;type=VOICE;waid=628nomerlu:+62 000-0000-0000\n' // Jangan ubah pola nya
+            + 'ORG:INI ALAN;\n' 
+            + 'TEL;type=CELL;type=VOICE;waid=6285793432434:+62 857-9343-2434\n' // NOMER HP LU
             + 'END:VCARD'
+            
+/********** FUNCTION ***************/
 
 const setiker = JSON.parse(fs.readFileSync('./src/stik.json'))
 const audionye = JSON.parse(fs.readFileSync('./src/audio.json'))
@@ -82,13 +89,38 @@ async function starts() {
 			if (!mek.key.fromMe) return
 			global.prefix
 			global.blocked
+			function clamp(value, min, max) {
+	return Math.min(Math.max(min, value), max)
+}
+
+function speedText(speed) {
+    let bits = speed * 8;
+    const units = ['', 'K', 'M', 'G', 'T'];
+    const places = [0, 1, 2, 3, 3];
+    let unit = 0;
+    while (bits >= 2000 && unit < 4) {
+      unit++;
+      bits /= 1000;
+    }
+
+    return `${bits.toFixed(places[unit])} ${units[unit]}bps`;
+}
 			const content = JSON.stringify(mek.message)
 			const from = mek.key.remoteJid
 			const type = Object.keys(mek.message)[0]
 			const { text, extendedText, contact, location, liveLocation, image, video, sticker, document, audio, product } = MessageType
 			const speed = require('performance-now') 
-			const date = new Date().toLocaleDateString()
-			const time = moment.tz('Asia/Jakarta').format(' (HH:mm:ss)--(DD/MM/YYYY) ')
+			const time = moment.tz('Asia/Jakarta').format('(HH : mm : ss)')
+			const timi = moment.tz('Asia/Jakarta').add(30, 'days').calendar();
+            const timu = moment.tz('Asia/Jakarta').add(20, 'days').calendar();
+
+			const tanggal = moment.tz('Asia/Jakarta').format('DD')
+			const arrayHari = ['Kamis', 'Jumat', 'Sabtu', 'Minggu', 'Senin', 'Selasa', 'Rabu']
+            const day = arrayHari[moment().format('DD') - 1]
+            
+			const teh = moment.tz('Asia/Jakarta').format('YYYY')
+			const arrayBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+            const bulan = arrayBulan[moment().format('MM') - 1]
 			body = (type === 'conversation' && mek.message.conversation.startsWith(prefix)) ? mek.message.conversation : (type == 'imageMessage') && mek.message.imageMessage.caption.startsWith(prefix) ? mek.message.imageMessage.caption : (type == 'videoMessage') && mek.message.videoMessage.caption.startsWith(prefix) ? mek.message.videoMessage.caption : (type == 'extendedTextMessage') && mek.message.extendedTextMessage.text.startsWith(prefix) ? mek.message.extendedTextMessage.text : ''
 			budy = (type === 'conversation') ? mek.message.conversation : (type === 'extendedTextMessage') ? mek.message.extendedTextMessage.text : ''
 			const command = body.slice(1).trim().split(/ +/).shift().toLowerCase()
@@ -96,8 +128,8 @@ async function starts() {
 			const isCmd = body.startsWith(prefix)
 			
 			mess = {
-				wait: '`\`\`\PROSES GAN! \`\`\`',
-				asik: '`\`\`\PROSES GAN! \`\`\`',
+				wait: '`\`\`\MEMPROSES! \`\`\`',
+				asik: '`\`\`\MEMPROSES! \`\`\`',
 				success: '_Yeay Berhasil Kak_',
 				error: {
 					stick: 'PT.error.Stick',
@@ -124,9 +156,7 @@ async function starts() {
 			const reply = (teks) => {
 				selfb.sendMessage(from, teks, text, {quoted:mek})
 			}
-			const apikey = setting.apiKey // get on https://leyscoders-api.herokuapp.com
-			const lolkey = setting.lol // get on http://lolhuman.herokuapp.com
-			const vinz = setting.vinz //get on https://api.zeks.xyz
+			
 			const sendMess = (hehe, teks) => {
 				selfb.sendMessage(hehe, teks, text)
 			}
@@ -135,7 +165,10 @@ async function starts() {
 			const mentions = (teks, memberr, id) => {
 				(id == null || id == undefined || id == false) ? selfb.sendMessage(from, teks.trim(), extendedText, {contextInfo: {"mentionedJid": memberr}}) : selfb.sendMessage(from, teks.trim(), extendedText, {quoted: freply, contextInfo: {"mentionedJid": memberr}})
 			}
-			
+			const costum = (pesan, tipe, target, target2) => {
+selfb.sendMessage(from, pesan, tipe, {quoted: { key: { fromMe: false, participant: `${target}`, ...(from ? { remoteJid: from } : {}) }, message: { conversation: `${target2}` }}})
+  }
+  
 
 			colors = ['red','white','black','blue','yellow','green']
 			const isMedia = (type === 'imageMessage' || type === 'videoMessage')
@@ -147,7 +180,7 @@ async function starts() {
 			if (isCmd && isGroup) console.log('\x1b[1;31m~\x1b[1;37m>', '[\x1b[1;32mEXEC\x1b[1;37m]', time, color(command), 'from', color(sender.split('@')[0]), 'in', color(groupName), 'args :', color(args.length))
 			let authorname = selfb.contacts[from] != undefined ? selfb.contacts[from].vname || selfb.contacts[from].notify : undefined	
 			function addMetadata(packname, author) {	
-	if (!packname) packname = 'WABot'; 
+	if (!packname) packname = setting.exif ; 
 	let name = `${packname}`
 	const packID = 'com.snowcorp.stickerly.android.stickercontentprovider b5e7275f-f1de-4137-961f-57becfad34f2'
     const playstore = 'https://play.google.com/store/apps/details?id=com.termux'
@@ -210,12 +243,21 @@ if (budy.match('Tobat')){
    var Hmm = fs.readFileSync('./src/audio/tobat.mp3');
 selfb.sendMessage(from, Hmm, audio, { mimetype: 'audio/mp4', quoted : freply, ptt: true })
 }
+if (budy.match('kontol')){
+   var Hmm = fs.readFileSync('./src/audio/kontol.mp3');
+selfb.sendMessage(from, Hmm, audio, { mimetype: 'audio/mp4', quoted : freply,ptt: true })
+}
+if (budy.match('Kontol')){
+   var Hmm = fs.readFileSync('./src/audio/kontol.mp3');
+selfb.sendMessage(from, Hmm, audio, { mimetype: 'audio/mp4', quoted : freply, ptt: true })
+}
+/********** END FUNCTION ***************/
+
 			
 			switch(command) {
 				case 'help':
 				case 'menu':
-				co = ["1.3","1.2","1.4","1.1","1.6","1.5","1.272bytes","1.392bytes","1.536bytes","1.464bytes","1.630bytes","1.139bytes"]
-  am = co[Math.floor(Math.random() * co.length)]
+				wuuw = `${time}\n┃ ❏ Date : ${tanggal}/${day}/${bulan}/${teh}`
 runtime = process.uptime()
           selfb.sendMessage(from, `
 ┏━━━━《 SelfBot Recode 》━━━━
@@ -223,144 +265,116 @@ runtime = process.uptime()
 ┣◪ 𝗜𝗡𝗙𝗢
 ┃ ❏ Library : Baileys
 ┃ ❏ Runtime : ${kyun(runtime)}
-┃ ❏ Waktu Saat Ini : ${time}
-┃ ❏ Prefix : 「 ${prefix} 」
-┃ ❏ Ram : *${am}* / 3.0gb
-┃ ❏ Selfbot Recode
+┃ ❏ Time : ${wuuw}
+┃ ❏ Prefix : 「 *${prefix}* 」
+┃https://tinyurl.com/yeafz3vp
 ‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎┃
 ┣◪ 𝗔𝗗𝗩𝗔𝗡𝗖𝗘𝗗
 ┃
-┣ ❏ ${prefix}statusimg
-┣ ❏ ${prefix}statusvid
-┣ ❏ ${prefix}addsticker
-┣ ❏ ${prefix}addvn
-┣ ❏ ${prefix}addimage
-┣ ❏ ${prefix}addvideo
-┣ ❏ ${prefix}getsticker
-┣ ❏ ${prefix}getvn
-┣ ❏ ${prefix}getimage
-┣ ❏ ${prefix}getvideo
-┣ ❏ ${prefix}nightcore
-┣ ❏ ${prefix}slow
-┣ ❏ ${prefix}tupai
-┣ ❏ ${prefix}blub
-┣ ❏ ${prefix}gemuk
-┣ ❏ ${prefix}ghost
-┣ ❏ ${prefix}bass
-┣ ❏ ${prefix}toptt
+┣ ❏ *${prefix}statusimg* [reply image]
+┣ ❏ *${prefix}statusvid* [reply video]
+┣ ❏ *${prefix}addsticker*
+┣ ❏ *${prefix}addvn*
+┣ ❏ *${prefix}addimage* 
+┣ ❏ *${prefix}addvideo*
+┣ ❏ *${prefix}getsticker* 
+┣ ❏ *${prefix}getvn* 
+┣ ❏ *${prefix}nightcore* [reply audio]
+┣ ❏ *${prefix}slow* [reply audio]
+┣ ❏ *${prefix}tupai* [reply audio]
+┣ ❏ *${prefix}blub* [reply audio]
+┣ ❏ *${prefix}gemuk* [reply audio]
+┣ ❏ *${prefix}ghost* [reply audio]
+┣ ❏ *${prefix}bass* [reply audio]
+┣ ❏ *${prefix}toptt* [reply audio]
+┣ ❏ *${prefix}tomp3* [reply video]
 ┃
 ┣◪ 𝗠𝗔𝗞𝗘𝗥 
 ┃
-┣ ❏ ${prefix}sticker
-┣ ❏ ${prefix}ttp [text]
-┣ ❏ ${prefix}attp [text]
-┣ ❏ ${prefix}take
-┣ ❏  ${prefix}hitler [@tagmember]
-┣ ❏  ${prefix}deletetrash [@tagmember]
-┣ ❏  ${prefix}trash [@tagmember]
-┣ ❏  ${prefix}joke [@tagmember]
-┣ ❏  ${prefix}sephia [@tagmember]
-┣ ❏  ${prefix}affect [reply gambar]
-┣ ❏  ${prefix}picture [reply gambar]
-┣ ❏  ${prefix}wanted [reply gambar]
-┣ ❏  ${prefix}trigger [reply gambar]
-┣ ❏  ${prefix}greyscale [reply gambar]
-┣ ❏  ${prefix}igstalk [@username]
+┣ ❏ *${prefix}sticker* [reply img/gif/mp4]
+┣ ❏ *${prefix}stik* [link]
+┣ ❏ *${prefix}gif* [link]
+┣ ❏ *${prefix}ttp* [text]
+┣ ❏ *${prefix}attp* [text]
+┣ ❏ *${prefix}take* [reply sticker]
+┣ ❏  *${prefix}hitler* [@tagmember]
+┣ ❏  *${prefix}deletetrash* [@tagmember]
+┣ ❏  *${prefix}trash* [@tagmember]
+┣ ❏  *${prefix}joke* [@tagmember]
+┣ ❏  *${prefix}sephia* [@tagmember]
+┣ ❏  *${prefix}affect* [reply gambar]
+┣ ❏  *${prefix}picture* [reply gambar]
+┣ ❏  *${prefix}wanted* [reply gambar]
+┣ ❏  *${prefix}trigger* [reply gambar]
+┣ ❏  *${prefix}greyscale* [reply gambar]
+┣ ❏  *${prefix}igstalk* [@username]
 ┃
 ┣◪ 𝗘𝗗𝗨𝗞𝗔𝗦𝗜 & 𝗜𝗡𝗙𝗢
 ┃
-┣ ❏  ${prefix}runtime
-┣ ❏  ${prefix}run [function]
-┣ ❏  ${prefix}cekchat
-┣ ❏  ${prefix}kali [2|8]
-┣ ❏  ${prefix}persegipjg [lebar|panjang]
-┣ ❏  ${prefix}kuadrat [angka]
-┣ ❏  ${prefix}persegi [sisi]
-┣ ❏  ${prefix}kubik [angka]
-┣ ❏  ${prefix}detik
-┣ ❏  ${prefix}sindointer
-┣ ❏  ${prefix}sindonasional
-┣ ❏  ${prefix}okezone
-┣ ❏  ${prefix}antara
-┣ ❏  ${prefix}berita
-┣ ❏  ${prefix}wattpad [query]
-┣ ❏  ${prefix}kiryuu
-┣ ❏  ${prefix}apkpure [apk]
-┣ ❏  ${prefix}otakunews
-┣ ❏  ${prefix}dewabatch
-┣ ❏  ${prefix}dewasearch [judul]
-┣ ❏  ${prefix}jadwalbola
+┣ ❏  *${prefix}runtime*
+┣ ❏  *${prefix}covid*
+┣ ❏  *${prefix}run* [function]
+┣ ❏  *${prefix}cekchat*
+┣ ❏  *${prefix}kali* [2|8]
+┣ ❏  *${prefix}persegipjg* [lebar|panjang]
+┣ ❏  *${prefix}kuadrat* [angka]
+┣ ❏  *${prefix}persegi* [sisi]
+┣ ❏  *${prefix}kubik* [angka]
+┣ ❏  *${prefix}detik*
+┣ ❏  *${prefix}sindointer*
+┣ ❏  *${prefix}sindonasional*
+┣ ❏  *${prefix}okezone*
+┣ ❏  *${prefix}antara*
+┣ ❏  *${prefix}berita*
+┣ ❏  *${prefix}wattpad* [query]
+┣ ❏  *${prefix}kiryuu*
+┣ ❏  *${prefix}apkpure [apk]*
+┣ ❏  *${prefix}otakunews*
+┣ ❏  *${prefix}dewabatch*
+┣ ❏  *${prefix}dewasearch* [judul]
+┣ ❏  *${prefix}jadwalbola*
 ┃
 ┣◪ 𝗚𝗥𝗢𝗨𝗣
 ┃
-┣ ❏ ${prefix}zxci
-┣ ❏ ${prefix}tag
-┣ ❏ ${prefix}add
-┣ ❏ ${prefix}promote
-┣ ❏ ${prefix}demote
-┣ ❏ ${prefix}kick
-┣ ❏ ${prefix}delete
-┣ ❏ ${prefix}jagoan
+┣ ❏ *${prefix}test*
+┣ ❏ *${prefix}tag*
+┣ ❏ *${prefix}add*
+┣ ❏ *${prefix}promote*
+┣ ❏ *${prefix}demote*
+┣ ❏ *${prefix}kick*
+┣ ❏ *${prefix}delete*
+┣ ❏ *${prefix}jagoan*
 ┃
-┗━━━━《 SelfBot Recode 》━━━━`, MessageType.text, {quoted: freply})
+┗━━━━《 SelfBot Recode 》━━━━`, MessageType.text, {quoted: freply}, {contextInfo: { forwardingScore: 508, isForwarded: true }})
+					break 
+					case 'fitnah':	
+				case 'fake': // tuh costum reply
+              costum('Ini', '6287775452636@s.whatsapp.com')
+                  break	
+                  case 'fordward':
+	   selfb.sendMessage(from, `${body.slice(10)}`, MessageType.text, {contextInfo: { forwardingScore: 508, isForwarded: true }}) 
+           break
+					case 'readall':
+					var chats = await selfb.chats.all()
+                    chats.map( async ({ jid }) => {
+                          await selfb.chatRead(jid)
+                    })
+					teks = `\`\`\`Berhasil membaca ${chats.length} Chat !\`\`\``
+					await selfb.sendMessage(from, teks, MessageType.text, {quoted: mek})
+					console.log(chats.length)
 					break
-					case 'bahasa':
-					case 'listbahasa':
-					selfb.sendMessage(from, `
-					List kode Bahasa
-  
-   af :  Afrikaans  
-   sq :  Albanian  
-   ar :  Arabic  
-   hy :  Armenian  
-   ca :  Catalan  
-   zh :  Chinese  
-   zh-cn :  Chinese (Mandarin/China)  
-   zh-tw :  Chinese (Mandarin/Taiwan)  
-   zh-yue :  Chinese (Cantonese)  
-   hr :  Croatian  
-   cs :  Czech  
-   da :  Danish  
-   nl :  Dutch  
-   en :  English  
-   en-au :  English (Australia)  
-   en-uk :  English (United Kingdom)  
-   en-us :  English (United States)  
-   eo :  Esperanto  
-   fi :  Finnish  
-   fr :  French  
-   de :  German  
-   el :  Greek  
-   ht :  Haitian Creole  
-   hi :  Hindi  
-   hu :  Hungarian  
-   is :  Icelandic  
-   id :  Indonesian  
-   it :  Italian  
-   ja :  Japanese  
-   ko :  Korean  
-   la :  Latin  
-   lv :  Latvian  
-   mk :  Macedonian  
-   no :  Norwegian  
-   pl :  Polish  
-   pt :  Portuguese  
-   pt-br :  Portuguese (Brazil)  
-   ro :  Romanian  
-   ru :  Russian  
-   sr :  Serbian  
-   sk :  Slovak  
-   es :  Spanish  
-   es-es :  Spanish (Spain)  
-   es-us :  Spanish (United States)  
-   sw :  Swahili  
-   sv :  Swedish  
-   ta :  Tamil  
-   th :  Thai  
-   tr :  Turkish  
-   vi :  Vietnamese  
-   cy :  Welsh `, MessageType.text, {quoted: freply})
-   break
+					case 'setstatus':
+				selfb.setStatus(`${body.slice(11)}`)
+   				.then(data => {
+        			reply(JSON.stringify(data))
+    				}).catch(err => console.log(err))
+    				break
+				case 'cgc':
+					var gc = body.slice(5)
+					mentioned = mek.message.extendedTextMessage.contextInfo.mentionedJid
+					selfb.groupCreate (`${gc}`, [`${sender}`, `${mentioned}`])
+					console.log ("created group with id: " + group.gid)
+					break
 					case 'me':
 					case 'owner':
                  selfb.sendMessage(from, {displayname: "Jeff", vcard: vcard}, MessageType.contact, { quoted: freply})
@@ -369,32 +383,64 @@ runtime = process.uptime()
 					case 'caristik':
 sweet = body.slice(9)
 					datas = await fetchJson(`https://api.zeks.xyz/api/searchsticker?apikey=${vinz}&q=${sweet}`)
-					teks = '=================\n'
+					teks = '>>>>>>>>>>>>>>>>>>>>>>\n'
 					for (let i of datas.sticker) {
-						teks += `\n*Link* : ${i}\n=================\n`
+						teks += `\n*‣Link sticker* : ${i}\n>>>>>>>>>>>>>>>>>>>>>>\n`
 					}
 					selfb.sendMessage(from, teks, MessageType.text, {quoted: freply})
 					break
 					case 'stik':
 					url = body.slice(6) 
-					
-					sweet = await getBuffer(`http://lolhuman.herokuapp.com/api/convert/towebp?apikey=${lolkey}&img=${url}`)
-					
-					selfb.sendMessage(from, sweet, sticker, {quoted: freply})
-					break
+					ranp = getRandom('.png')
+rano = getRandom('.webp')
+					exec(`wget ${url} -O ${ranp} && ffmpeg -i ${ranp} -vcodec libwebp -filter:v fps=fps=15 -lossless 1 -loop 0 -preset default -an -vsync 0 -s 512:512 ${rano}`, (err) => {
+	if (err) return reply('Error!')
+						fs.unlinkSync(ranp)
+						
+						buffer9 = fs.readFileSync(rano)
+						costum(buffer9, sticker, tescuk, `Sticker`)
+						
+						fs.unlinkSync(rano)
+					})
+break
+					case 'gif':
+					url = body.slice(5) 
+					ranp = getRandom('.png')
+rano = getRandom('.webp')
+					exec(`wget ${url} -O ${ranp} && ffmpeg -i ${ranp} -vcodec libwebp -filter:v fps=fps=15 -lossless 1 -loop 0 -preset default -an -vsync 0 -s 512:512 ${rano}`, (err) => {
+	if (err) return reply('Error!')
+						fs.unlinkSync(ranp)
+						
+						buffer2 = fs.readFileSync(rano)
+						costum(buffer2, sticker, tescuk, `Sticker`)
+						
+						fs.unlinkSync(rano)
+					})
+break
 				
                case 'speed':
-                case 'ping':
-                pingbro = { key: { fromMe: false, participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: "status@broadcast" } : {}) }, message: { "imageMessage": { "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc", "mimetype": "image/jpeg", "caption": "𝙋𝙄𝙉𝙂 𝙂𝙒 𝘽𝙍𝙊", "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=", "fileLength": "28777", "height": 1080, "width": 1079, "mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=", "fileEncSha256": "sR9D2RS5JSifw49HeBADguI23fWDz1aZu4faWG/CyRY=", "directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69", "mediaKeyTimestamp": "1610993486", "jpegThumbnail": fs.readFileSync('image/mek.jpeg')} } }
-			
-                co = ["1.3","1.2","1.4","1.1","1.6","1.5","1.272bytes","1.392bytes","1.536bytes","1.464bytes","1.630bytes","1.139bytes"]
-  am = co[Math.floor(Math.random() * co.length)]
-                    const timestamp = speed();
-                    const latensi = speed() - timestamp
-                    selfb.updatePresence(from, Presence.composing) 
-				uptime = process.uptime()
-                    selfb.sendMessage(from, `-{𝗣𝗜𝗡𝗚}-\n\nRAM : *${am}*\nChat List : *${totalchat.length}*\nBlock List : *${blocked.length}*\n\n\nSpeed: *${latensi.toFixed(4)}𝚂𝙴𝙲𝙾𝙽𝙳𝚂!`, text, { quoted: pingbro})
-                    break
+case 'ping':
+	const timestamp = speed();
+	const latensi = speed() - timestamp
+	exec(`neofetch --stdout`, (error, stdout, stderr) => {
+	const child = stdout.toString('utf-8')
+	const teks = child.replace(/Memory:/, "Ram:")
+	var itsme = `0@s.whatsapp.net`
+	var split = `*𝙋𝙞𝙣𝙜!*`
+	const pingbro = {
+	contextInfo: {
+	participant: itsme,
+	quotedMessage: {
+	extendedTextMessage: {
+	text: split,
+				}
+			}
+		}
+	}
+	const pingnya = `${teks}\nSpeed: ${latensi.toFixed(4)} _Second_`
+	selfb.sendMessage(from, `${teks}\nSpeed: ${latensi.toFixed(4)} _Second_`, MessageType.text, pingbro)
+	})
+	break
                     case 'fitnah':
 					var gh = body.slice(8)
 					mentioned = mek.message.extendedTextMessage.contextInfo.mentionedJid
@@ -409,30 +455,30 @@ sweet = body.slice(9)
 					var org = pc.split("|")[1];
 					selfb.sendMessage(nomor+'@s.whatsapp.net', org, text)
 					break
-                    case 'statusvid':
+                    case 'statusimg':
                     var teksyy = body.slice(11) 
                     reply('Sedang Proses Pengiriman!')
                     enmedia = JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo
 					media = await selfb.downloadAndSaveMediaMessage(enmedia)
                     buff2 = fs.readFileSync(media)
                     selfb.sendMessage('status@broadcast', buff2, MessageType.image, {quoted: mek, caption: `${teksyy}`})
-                    reply('Upload Story Whatsapp Sukses!')
+                    reply('Sukses Upload Video Ke Status!')
                         break
-                        case 'statusimg':
+                        case 'statusvid':
                     var teksyy = body.slice(11)
-                    reply('Sedang Proses Pengiriman!')
+                    reply('Sedang Mengupload!')
                     enmedia = JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo
 					media = await selfb.downloadAndSaveMediaMessage(enmedia)
                     buff5 = fs.readFileSync(media)
                     selfb.sendMessage('status@broadcast', buff5, MessageType.video, {quoted: mek, caption: `${teksyy}`})
-                    reply('Upload Story Whatsapp Sukses!')
+                    reply('Sukses Upload Gambar Ke Status!')
                         break
                         case 'simi':
                     misi = body.slice(5)
                     simi = await fetchJson(`https://api.zeks.xyz/api/simi?apikey=${vinz}&text=${misi}`, {method: 'get'})
                     reply(simi.result) 
                         break
-                        case 'xci':
+                        case 'test':
 					await selfb.toggleDisappearingMessages(from, WA_DEFAULT_EPHEMERAL) 
 					
 await selfb.toggleDisappearingMessages(from, 0)
@@ -459,7 +505,7 @@ await selfb.toggleDisappearingMessages(from, 0)
 					mentioned = mek.message.extendedTextMessage.contextInfo.mentionedJid[0]
 					let { jid, id, notify } = groupMembers.find(x => x.jid === mentioned)
 					try {
-						pp = await client.getProfilePicture(id)
+						pp = await selfb.getProfilePicture(id)
 						buffer = await getBuffer(pp)
 						selfb.updateProfilePicture(botNumber, buffer)
 						mentions(`Foto profile Berhasil di perbarui menggunakan foto profile @${id.split('@')[0]}`, [jid], true)
@@ -567,7 +613,7 @@ await selfb.toggleDisappearingMessages(from, 0)
 					anu1 = `https://api.memegen.link/images/custom/${atas}/${bawah}.png?background=${teks}`
 					exec(`wget ${anu1} -O ${ranp} && ffmpeg -i ${ranp} -vcodec libwebp -filter:v fps=fps=20 -lossless 1 -loop 0 -preset default -an -vsync 0 -s 512:512 ${rano}`, (err) => {
 					fs.unlinkSync(ranp)
-					exec(`webpmux -set exif ${addMetadata('@SelfBot-TermuX', 'MemeTeks')} ${rano} -o ${rano}`, async (error) => {
+					exec(`webpmux -set exif ${addMetadata(exif, 'MemeTeks')} ${rano} -o ${rano}`, async (error) => {
 					selfb.sendMessage(from, fs.readFileSync(rano), sticker, {quoted: freply})
 					fs.unlinkSync(rano)
 					})
@@ -980,7 +1026,7 @@ await selfb.toggleDisappearingMessages(from, 0)
 					ran = getRandom('.png')
 					exec(`ffmpeg -i ${media} ${ran}`, (err) => {
 						fs.unlinkSync(media)
-						if (err) return reply('❌ Gagal, pada saat mengkonversi sticker ke gambar ❌')
+						if (err) return reply('GAGAL')
 						buffer2 = fs.readFileSync(ran)
 						selfb.sendMessage(from, buffer2, image, {quoted: freply, caption: 'Berhasil...'})
 						fs.unlinkSync(ran)
@@ -1005,12 +1051,15 @@ await selfb.toggleDisappearingMessages(from, 0)
                     buffer3 = await getBuffer(`http://api.lolhuman.xyz/api/ttp?apikey=${lolkey}&text=${txt}`)
                     selfb.sendMessage(from, buffer3, sticker, { quoted: freply })
                     break
-                    case 'semoji':  
-       teks = emojiUnicode(gm).trim()
-       anu = await getBuffer(`https://api.zeks.xyz/api/emoji-image?apikey=${vinz}&emoji=${teks}`) 
-       reply(mess.wait)
-       selfb.sendMessage(from, anu, sticker, {quoted:mek}) 
-       break
+                    case 'emoji':
+				if (args.length < 1) return reply('KASIH EMOJI SUU!!!')
+				gatauda = body.slice(7)
+				reply(mess.wait)
+				const q = args.join (' ')
+				const ets = emojiUnicode(q)
+				buff2 = await getBuffer(`https://videfikri.com/api/emojitopng/?emojicode=${ets}`, {method: 'get'})
+				selfb.sendMessage(from, buff2, image, { quoted: mek })
+				break
                     case 'attp':
   if (args.length === 0) return selfb.sendMessage(from, 'Teks nya?', MessageType.text, {quoted: rio})
   let yosh = body.slice(6)
@@ -1024,13 +1073,13 @@ if (!isQuotedSticker) return reply(' Reply stikernya')
 reply(mess.wait)
 anumedia = JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo
 anum = await selfb.downloadAndSaveMediaMessage(anumedia)
-ran = getRandom('.webp')
+ran = getRandom('.gif')
 exec(`ffmpeg -i ${anum} ${ran}`, (err) => {
   fs.unlinkSync(anum)
   if (err) return reply('Gagal, pada saat mengkonversi sticker ke Video')
   buffer = fs.readFileSync(ran)
   selfb.sendMessage(from, buffer, video, {
-quoted: freply, caption: 'Buat apa sii..'
+quoted: freply 
   })
   fs.unlinkSync(ran)
 })
@@ -1086,61 +1135,6 @@ break
 				}
 				teks += `\n*Total : ${audionye.length}*`
 				selfb.sendMessage(from, teks.trim(), extendedText, {  quoted: { key: { fromMe: false, participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: "status@broadcast" } : {}) }, message: { "imageMessage": { "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc", "mimetype": "image/jpeg", "caption": "𝐒𝐄𝐋𝐅 𝐁𝐎𝐓 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩", "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=", "fileLength": "28777", "height": 1080, "width": 1079, "mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=", "fileEncSha256": "sR9D2RS5JStw49HeBADguI23fWDz1aZu4faWG/CyRY=", "directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69", "mediaKeyTimestamp": "1610993486", "jpegThumbnail": fs.readFileSync('image/mek.jpeg')} }}, contextInfo: { "mentionedJid": audionye } })
-				break
-			case 'addimage':
-				if (!isQuotedImage) return reply('Reply imagenya blokk!')
-				svst = body.slice(10)
-				if (!svst) return reply('Nama imagenya apa su?')
-				boij = JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo
-				delb = await selfb.downloadMediaMessage(boij)
-				imagenye.push(`${svst}`)
-				fs.writeFileSync(`./src/image/${svst}.jpeg`, delb)
-				fs.writeFileSync('./src/image.json', JSON.stringify(imagenye))
-				selfb.sendMessage(from, `Sukses Menambahkan image ke dalam database\nSilahkan cek dengan cara ${prefix}listimage`, MessageType.text, { quoted: { key: { fromMe: false, participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: "status@broadcast" } : {}) }, message: { "imageMessage": { "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc", "mimetype": "image/jpeg", "caption": "𝐒𝐄𝐋𝐅 𝐁𝐎𝐓 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩", "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=", "fileLength": "28777", "height": 1080, "width": 1079, "mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=", "fileEncSha256": "sR9D2RS5JStw49HeBADguI23fWDz1aZu4faWG/CyRY=", "directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69", "mediaKeyTimestamp": "1610993486", "jpegThumbnail": fs.readFileSync('image/mek.jpeg')} }} }) 
-				await limitAdd(sender)
-				break
-			case 'getimage':
-            case 'getimg':
-			   if (args.length < 1) return reply('Masukan nama yang terdaftar di list image')
-				namastc = body.slice(10)
-				buffer = fs.readFileSync(`./src/image/${namastc}.jpeg`)
-				selfb.sendMessage(from, buffer, image, {  quoted: { key: { fromMe: false, participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: "status@broadcast" } : {}) }, message: { "imageMessage": { "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc", "mimetype": "image/jpeg", "caption": "𝐒𝐄𝐋𝐅 𝐁𝐎𝐓 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩", "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=", "fileLength": "28777", "height": 1080, "width": 1079, "mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=", "fileEncSha256": "sR9D2RS5JStw49HeBADguI23fWDz1aZu4faWG/CyRY=", "directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69", "mediaKeyTimestamp": "1610993486", "jpegThumbnail": fs.readFileSync('image/mek.jpeg')} }}, caption: `Result From Database : ${namastc}.jpeg` })
-				break
-			case 'imagelist':
-			case 'listimage':
-				teks = '*List Image :*\n\n'
-				for (let awokwkwk of imagenye) {
-					teks += `- ${awokwkwk}\n`
-				}
-				teks += `\n*Total : ${imagenye.length}*`
-				selfb.sendMessage(from, teks.trim(), extendedText, {  quoted: { key: { fromMe: false, participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: "status@broadcast" } : {}) }, message: { "imageMessage": { "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc", "mimetype": "image/jpeg", "caption": "𝐒𝐄𝐋𝐅 𝐁𝐎𝐓 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩", "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=", "fileLength": "28777", "height": 1080, "width": 1079, "mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=", "fileEncSha256": "sR9D2RS5JStw49HeBADguI23fWDz1aZu4faWG/CyRY=", "directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69", "mediaKeyTimestamp": "1610993486", "jpegThumbnail": fs.readFileSync('image/mek.jpeg')} }}, contextInfo: { "mentionedJid": imagenye } })
-				break
-			case 'addvideo':
-				if (!isQuotedVideo) return reply('Reply videonya blokk!')
-				svst = body.slice(10)
-				if (!svst) return reply('Nama videonya apa su?')
-				boij = JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo
-				delb = await selfb.downloadMediaMessage(boij)
-				videonye.push(`${svst}`)
-				fs.writeFileSync(`./src/video/${svst}.mp4`, delb)
-				fs.writeFileSync('./src/video.json', JSON.stringify(videonye))
-				selfb.sendMessage(from, `Sukses Menambahkan Video\nCek dengan cara ${prefix}listvideo`, MessageType.text, { quoted: { key: { fromMe: false, participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: "status@broadcast" } : {}) }, message: { "imageMessage": { "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc", "mimetype": "image/jpeg", "caption": "𝐒𝐄𝐋𝐅 𝐁𝐎𝐓 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩", "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=", "fileLength": "28777", "height": 1080, "width": 1079, "mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=", "fileEncSha256": "sR9D2RS5JStw49HeBADguI23fWDz1aZu4faWG/CyRY=", "directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69", "mediaKeyTimestamp": "1610993486", "jpegThumbnail": fs.readFileSync('image/mek.jpeg')} }} }) 
-				break
-			case 'getvideo':
-			   if (args.length < 1) return reply('Masukan nama yang terdaftar di list video')
-				namastc = body.slice(10)
-				buffer = fs.readFileSync(`./src/video/${namastc}.mp4`)
-				selfb.sendMessage(from, buffer, video, { mimetype: 'video/mp4', quoted: { key: { fromMe: false, participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: "status@broadcast" } : {}) }, message: { "imageMessage": { "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc", "mimetype": "image/jpeg", "caption": "𝐒𝐄𝐋𝐅 𝐁𝐎𝐓 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩", "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=", "fileLength": "28777", "height": 1080, "width": 1079, "mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=", "fileEncSha256": "sR9D2RS5JStw49HeBADguI23fWDz1aZu4faWG/CyRY=", "directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69", "mediaKeyTimestamp": "1610993486", "jpegThumbnail": fs.readFileSync('image/mek.jpeg')} }} }) 
-				break
-			case 'listvideo':
-			case 'videolist':
-				teks = '*List Video :*\n\n'
-				for (let awokwkwk of videonye) {
-					teks += `- ${awokwkwk}\n`
-				}
-				teks += `\n*Total : ${videonye.length}*`
-				selfb.sendMessage(from, teks.trim(), extendedText, {  quoted: { key: { fromMe: false, participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: "status@broadcast" } : {}) }, message: { "imageMessage": { "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc", "mimetype": "image/jpeg", "caption": "𝐒𝐄𝐋𝐅 𝐁𝐎𝐓 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩", "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=", "fileLength": "28777", "height": 1080, "width": 1079, "mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=", "fileEncSha256": "sR9D2RS5JStw49HeBADguI23fWDz1aZu4faWG/CyRY=", "directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69", "mediaKeyTimestamp": "1610993486", "jpegThumbnail": fs.readFileSync('image/mek.jpeg')} }}, contextInfo: { "mentionedJid": videonye } })
-				break
 				break
 				case 'img2url':
              var imgbb = require('imgbb-uploader')
@@ -1258,7 +1252,7 @@ break
 							})
 							.on('end', function () {
 								console.log('Finish')
-								exec(`webpmux -set exif ${addMetadata('@SelfBot-TermuX')} ${ran} -o ${ran}`, async (error) => {
+								exec(`webpmux -set exif ${addMetadata(exif)} ${ran} -o ${ran}`, async (error) => {
 								if (error) return reply(mess.error.stick)
 								selfb.sendMessage(from, fs.readFileSync(ran), sticker, { quoted: freply })
 								fs.unlinkSync(media)	
@@ -1290,7 +1284,7 @@ break
 							})
 							.on('end', function () {
 								console.log('Finish')
-								exec(`webpmux -set exif ${addMetadata('@SelfBot-TermuX')} ${ran} -o ${ran}`, async (error) => {
+								exec(`webpmux -set exif ${addMetadata(exif)} ${ran} -o ${ran}`, async (error) => {
 									if (error) return reply(mess.error.stick)
 									selfb.sendMessage(from, fs.readFileSync(ran), sticker, { quoted: freply })
 									fs.unlinkSync(media)	
@@ -1310,7 +1304,7 @@ break
 						ranp = getRandom('.png')
 						wew = `❮⏳❯  \`\`\`Please Wait! \`\`\``
 					selfb.sendMessage(from, wew, text, { quoted: freply })
-						keyrmbg = 'Your-ApiKey'
+						keyrmbg = 'RxZN4cvCwjXyrbhE1P92bJPA'
 						await removeBackgroundFromImageFile({path: media, apiKey: keyrmbg, size: 'auto', type: 'auto', ranp}).then(res => {
 							fs.unlinkSync(media)
 							let buffer = Buffer.from(res.base64img, 'base64')
@@ -1319,7 +1313,7 @@ break
 							})
 							exec(`ffmpeg -i ${ranp} -vcodec libwebp -filter:v fps=fps=20 -lossless 1 -loop 0 -preset default -an -vsync 0 -s 512:512 ${ranw}`, (err) => {
 								fs.unlinkSync(ranp)
-								exec(`webpmux -set exif ${addMetadata('@SelfBot-TermuX')} ${ranw} -o ${ranw}`, async (error) => {
+								exec(`webpmux -set exif ${addMetadata(exif)} ${ranw} -o ${ranw}`, async (error) => {
 								selfb.sendMessage(from, fs.readFileSync(ranw), sticker, { quoted: freply })
 								fs.unlinkSync(ranw)
 								})
@@ -1368,7 +1362,7 @@ break
 							})
 							.on('end', function () {
 								console.log('Finish')
-								exec(`webpmux -set exif ${addMetadata('@SelfBot-TermuX')} ${ran} -o ${ran}`, async (error) => {
+								exec(`webpmux -set exif ${addMetadata(exif)} ${ran} -o ${ran}`, async (error) => {
 								if (error) return reply(mess.error.stick)
 								selfb.sendMessage(from, fs.readFileSync(ran), sticker, { quoted: freply })
 								fs.unlinkSync(media)	
@@ -1400,7 +1394,7 @@ break
 							})
 							.on('end', function () {
 								console.log('Finish')
-								exec(`webpmux -set exif ${addMetadata('@SelfBot-TermuX')} ${ran} -o ${ran}`, async (error) => {
+								exec(`webpmux -set exif ${addMetadata(exif)} ${ran} -o ${ran}`, async (error) => {
 									if (error) return reply(mess.error.stick)
 									selfb.sendMessage(from, fs.readFileSync(ran), sticker, { quoted: freply })
 									fs.unlinkSync(media)	
@@ -1420,7 +1414,7 @@ break
 						ranp = getRandom('.png')
 						wew = `❮⏳❯  \`\`\`Please Wait! \`\`\``
 					selfb.sendMessage(from, wew, text, { quoted: freply })
-						keyrmbg = 'Your-ApiKey'
+						keyrmbg = 'RxZN4cvCwjXyrbhE1P92bJPA'
 						await removeBackgroundFromImageFile({path: media, apiKey: keyrmbg, size: 'auto', type: 'auto', ranp}).then(res => {
 							fs.unlinkSync(media)
 							let buffer = Buffer.from(res.base64img, 'base64')
@@ -1429,7 +1423,7 @@ break
 							})
 							exec(`ffmpeg -i ${ranp} -vcodec libwebp -filter:v fps=fps=20 -lossless 1 -loop 0 -preset default -an -vsync 0 -s 512:512 ${ranw}`, (err) => {
 								fs.unlinkSync(ranp)
-								exec(`webpmux -set exif ${addMetadata('@SelfBot-TermuX')} ${ranw} -o ${ranw}`, async (error) => {
+								exec(`webpmux -set exif ${addMetadata(exif)} ${ranw} -o ${ranw}`, async (error) => {
 								selfb.sendMessage(from, fs.readFileSync(ranw), sticker, { quoted: freply })
 								fs.unlinkSync(ranw)
 								})
@@ -1541,7 +1535,7 @@ break
 						fs.unlinkSync(media)
 						if (err) return reply('Error!')
 						hah = fs.readFileSync(ran)
-						selfb.sendMessage(from, hah, audio, {mimetype: 'audio/mp4', ptt:true,  quoted: { key: { fromMe: false, participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: "status@broadcast" } : {}) }, message: { "imageMessage": { "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc", "mimetype": "image/jpeg", "caption": "𝐒𝐄𝐋𝐅 𝐁𝐎𝐓 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩", "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=", "fileLength": "28777", "height": 1080, "width": 1079, "mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=", "fileEncSha256": "sR9D2RS5JSifw49HeBADguI23fWDz1aZu4faWG/CyRY=", "directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69", "mediaKeyTimestamp": "1610993486", "jpegThumbnail": fs.readFileSync('image/mek.jpeg')} } } })
+						selfb.sendMessage(from, hah, audio, {mimetype: 'audio/mp4', ptt:true,  quoted: { key: { fromMe: false, participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: "status@broadcast" } : {}) }, message: { "imageMessage": { "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc", "mimetype": "image/jpeg", "caption": "𝐒𝐄𝐋𝐅 𝐁??𝐓 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩", "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=", "fileLength": "28777", "height": 1080, "width": 1079, "mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=", "fileEncSha256": "sR9D2RS5JSifw49HeBADguI23fWDz1aZu4faWG/CyRY=", "directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69", "mediaKeyTimestamp": "1610993486", "jpegThumbnail": fs.readFileSync('image/mek.jpeg')} } } })
 						fs.unlinkSync(ran)
 					    })
 				        break
@@ -1580,7 +1574,7 @@ break
 						fs.unlinkSync(media)
 						if (err) return reply('Gagal mengkonversi audio ke ptt')
 						topt = fs.readFileSync(ran)
-						selfb.sendMessage(from, hah, audio, {mimetype: 'audio/mp4', ptt:true,  quoted: { key: { fromMe: false, participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: "status@broadcast" } : {}) }, message: { "imageMessage": { "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc", "mimetype": "image/jpeg", "caption": "𝐒𝐄𝐋𝐅 𝐁𝐎𝐓 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩", "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=", "fileLength": "28777", "height": 1080, "width": 1079, "mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=", "fileEncSha256": "sR9D2RS5JSifw49HeBADguI23fWDz1aZu4faWG/CyRY=", "directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69", "mediaKeyTimestamp": "1610993486", "jpegThumbnail": fs.readFileSync('image/mek.jpeg')} } } })
+						selfb.sendMessage(from, topt, audio, {mimetype: 'audio/mp4', ptt:true,  quoted: { key: { fromMe: false, participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: "status@broadcast" } : {}) }, message: { "imageMessage": { "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc", "mimetype": "image/jpeg", "caption": "𝐒𝐄𝐋𝐅 𝐁𝐎𝐓 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩", "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=", "fileLength": "28777", "height": 1080, "width": 1079, "mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=", "fileEncSha256": "sR9D2RS5JSifw49HeBADguI23fWDz1aZu4faWG/CyRY=", "directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69", "mediaKeyTimestamp": "1610993486", "jpegThumbnail": fs.readFileSync('image/mek.jpeg')} } } })
 						})
 					    break
 					case 'tomp3':
@@ -1599,10 +1593,11 @@ break
 					})
 					break
 		case 'kisahnabi':
-			data = await fetchJson(`https://leyscoders-api.herokuapp.com/api/nabi?q=${body.slice(11)}&apikey=${apikey}`)
+		nabi = body.slice(11) 
+			data = await fetchJson(`http://lolhuman.herokuapp.com/api/kisahnabi/${nabi}?apikey=${lolkey}`)
 			hepik = data.result
-			bismillah = await getBuffer(data.result.image)
-		    teks = `➸ *Nama*: ${hepik.nabi}\n➸ *Lahir*: ${hepik.lahir}\n➸ *Umur:* ${hepik.umur}\n➸ *Tempat*: ${hepik.tempat}\n➸ *Kisah*: \n\n${hepik.kisah}`
+			bismillah = fs.readFileSync('./image/kaligrafi.jpeg')
+		    teks = `➸ *Nama*: ${hepik.name}\n➸ *Lahir*: ${hepik.thn_kelahiran}\n➸ *Umur:* ${hepik.age}\n➸ *Tempat*: ${hepik.place}\n\n➸ *Kisah*: \n${hepik.story}`
 			selfb.sendMessage(from, bismillah, image, {quoted: freply, caption: teks})
 			break
 				case 'setprefix':
@@ -1612,7 +1607,72 @@ break
 					fs.writeFileSync('./src/settings.json', JSON.stringify(setting, null, '\t'))
 					reply(`Prefix berhasil di ubah menjadi : ${prefix}`)
 					break
-				
+				case 'setexif':
+					if (args.length < 1) return
+					exif = args[0]
+					setting.exif = exif
+					fs.writeFileSync('./src/settings.json', JSON.stringify(setting, null, '\t'))
+					reply(`Exif berhasil di ubah menjadi : ${exif}`)
+					break
+					
+					case 'bahasa':
+					case 'listbahasa':
+					selfb.sendMessage(from, `
+					List kode Bahasa
+  
+   af :  Afrikaans  
+   sq :  Albanian  
+   ar :  Arabic  
+   hy :  Armenian  
+   ca :  Catalan  
+   zh :  Chinese  
+   zh-cn :  Chinese (Mandarin/China)  
+   zh-tw :  Chinese (Mandarin/Taiwan)  
+   zh-yue :  Chinese (Cantonese)  
+   hr :  Croatian  
+   cs :  Czech  
+   da :  Danish  
+   nl :  Dutch  
+   en :  English  
+   en-au :  English (Australia)  
+   en-uk :  English (United Kingdom)  
+   en-us :  English (United States)  
+   eo :  Esperanto  
+   fi :  Finnish  
+   fr :  French  
+   de :  German  
+   el :  Greek  
+   ht :  Haitian Creole  
+   hi :  Hindi  
+   hu :  Hungarian  
+   is :  Icelandic  
+   id :  Indonesian  
+   it :  Italian  
+   ja :  Japanese  
+   ko :  Korean  
+   la :  Latin  
+   lv :  Latvian  
+   mk :  Macedonian  
+   no :  Norwegian  
+   pl :  Polish  
+   pt :  Portuguese  
+   pt-br :  Portuguese (Brazil)  
+   ro :  Romanian  
+   ru :  Russian  
+   sr :  Serbian  
+   sk :  Slovak  
+   es :  Spanish  
+   es-es :  Spanish (Spain)  
+   es-us :  Spanish (United States)  
+   sw :  Swahili  
+   sv :  Swedish  
+   ta :  Tamil  
+   th :  Thai  
+   tr :  Turkish  
+   vi :  Vietnamese  
+   cy :  Welsh `, MessageType.text, {quoted: freply})
+   break 
+   
                            }
 		} catch (e) {
 			console.log('Error : %s', color(e, 'red'))
@@ -1620,4 +1680,3 @@ break
 	})
 }
 starts()
-
