@@ -26,6 +26,8 @@ Cara menampilkan menu : zhelp/zmenu
 ```
 
 ##FITUR
+
+```bash
 ┏━━━━《 MENUNYA 》━━━━
 ┃
 ┣◪ 𝗦𝗬𝗦𝗧𝗘𝗠
@@ -109,6 +111,7 @@ Cara menampilkan menu : zhelp/zmenu
 ┣ ❏ *${prefix}jagoan*
 ┃
 ┗━━━━《 SelfBot Recode 》━━━━
+```
 
 
 ## THANKS TO
