@@ -29,7 +29,6 @@ const apikey = setting.apiKey // get on https://leyscoders-api.herokuapp.com
 const lolkey = setting.lol // get on http://lolhuman.herokuapp.com
 const vinz = setting.vinz //get on https://api.zeks.xyz
 blocked = []
-public = false
 const vcard = 'BEGIN:VCARD\n' 
             + 'VERSION:3.0\n' 
             + 'FN:ME? \n' 
@@ -102,22 +101,6 @@ async function starts() {
 			
 			global.prefix
 			global.blocked
-			function clamp(value, min, max) {
-	return Math.min(Math.max(min, value), max)
-}
-
-function speedText(speed) {
-    let bits = speed * 8;
-    const units = ['', 'K', 'M', 'G', 'T'];
-    const places = [0, 1, 2, 3, 3];
-    let unit = 0;
-    while (bits >= 2000 && unit < 4) {
-      unit++;
-      bits /= 1000;
-    }
-
-    return `${bits.toFixed(places[unit])} ${units[unit]}bps`;
-}
 			const content = JSON.stringify(mek.message)
 			const from = mek.key.remoteJid
 			const type = Object.keys(mek.message)[0]
@@ -181,10 +164,6 @@ function speedText(speed) {
 			const costum = (pesan, tipe, target, target2) => {
 selfb.sendMessage(from, pesan, tipe, {quoted: { key: { fromMe: false, participant: `${target}`, ...(from ? { remoteJid: from } : {}) }, message: { conversation: `${target2}` }}})
   }
-		
-		if (!public){
-			if (!mek.key.fromMe) return
-		}
   
 
 			colors = ['red','white','black','blue','yellow','green']
@@ -291,6 +270,7 @@ ${wuuw}
 ┃
 ┣ ❏ *${prefix}statusimg* [reply image]
 ┣ ❏ *${prefix}statusvid* [reply video]
+┣ ❏ *${prefix}statustext* [text]
 ┣ ❏ *${prefix}addsticker*
 ┣ ❏ *${prefix}addvn*
 ┣ ❏ *${prefix}addimage* 
@@ -514,8 +494,8 @@ break
                     selfb.sendMessage('status@broadcast', buff5, MessageType.video, {quoted: mek, caption: `${teksyy}`})
                     reply('Sukses Upload Video Ke Status!')
                         break
-                        case 'upload':
-                     teksyy = body.slice(8) 
+                        case 'statustext':
+                     teksyy = body.slice(12) 
                     reply('Sedang Mengupload!')
                     selfb.sendMessage('status@broadcast', teksyy, MessageType.text) 
                     reply('Sukses Upload Ke Status!')
