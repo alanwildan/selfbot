@@ -28,7 +28,6 @@ const lolkey = setting.lol // get on http://lolhuman.herokuapp.com
 const vinz = setting.vinz //get on https://api.zeks.xyz
 const nomer = setting.ownerNumber
 blocked = []
-public = false
 const vcard = 'BEGIN:VCARD\n' 
             + 'VERSION:3.0\n' 
             + 'FN:ME? \n' 
@@ -101,30 +100,12 @@ async function starts() {
 			
 			global.prefix
 			global.blocked
-			function clamp(value, min, max) {
-	return Math.min(Math.max(min, value), max)
-}
-
-function speedText(speed) {
-    let bits = speed * 8;
-    const units = ['', 'K', 'M', 'G', 'T'];
-    const places = [0, 1, 2, 3, 3];
-    let unit = 0;
-    while (bits >= 2000 && unit < 4) {
-      unit++;
-      bits /= 1000;
-    }
-
-    return `${bits.toFixed(places[unit])} ${units[unit]}bps`;
-}
 			const content = JSON.stringify(mek.message)
 			const from = mek.key.remoteJid
 			const type = Object.keys(mek.message)[0]
 			const { text, extendedText, contact, location, liveLocation, image, video, sticker, document, audio, product } = MessageType
 			const speed = require('performance-now') 
 			const time = moment.tz('Asia/Jakarta').format('HH:mm:ss')
-			const timi = moment.tz('Asia/Jakarta').add(30, 'days').calendar();
-            const timu = moment.tz('Asia/Jakarta').add(20, 'days').calendar();
             const hariRaya = new Date('april 12, 2021 03:00:00')
 			const sekarang = new Date().getTime();
 			const Selisih = hariRaya - sekarang;
@@ -486,11 +467,6 @@ ${wuuw}
         			reply(JSON.stringify(data))
     				}).catch(err => console.log(err))
     				break
-				case 'cgc':
-					var gc = body.slice(5)
-					selfb.groupCreate (`${gc}`, [`${sender}`, `6285793432434`])
-					console.log ("created group with id: " + 6285793432434)
-					break
 					case 'me':
 					case 'owner':
                  selfb.sendMessage(from, {displayname: "Jeff", vcard: vcard}, MessageType.contact, { quoted: freply})
@@ -639,23 +615,12 @@ await selfb.toggleDisappearingMessages(from, 0)
 					}
 				case 'asupan':
 				selfb.updatePresence(from, Presence.composing) 
-				data = fs.readFileSync('./src/asupan.js');
-					apusan = { key: { fromMe: false, participant: `0@s.whatsapp.net`, ...(from ? { remoteJid: "status@broadcast" } : {}) }, message: { "imageMessage": { "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc", "mimetype": "image/jpeg", "caption": "ᴀsᴜᴘᴀɴ ᴛɪᴍᴇ :v", "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=", "fileLength": "28777", "height": 1080, "width": 1079, "mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=", "fileEncSha256": "sR9D2RS5JSifw49HeBADguI23fWDz1aZu4faWG/CyRY=", "directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69", "mediaKeyTimestamp": "1610993486", "jpegThumbnail": fs.readFileSync('image/mek.jpeg')} } }
-				reply(mess.wait)
-					n = JSON.parse(JSON.stringify(data));
-					nimek =  n[Math.floor(Math.random() * n.length)];
-					pok = await getBuffer(nimek)
-					selfb.sendMessage(from, pok, video, { quoted: apusan, caption: 'ᴀsᴜᴘᴀɴ ɢᴀɴ!'})
-					break
-					case 'asupann':
-				selfb.updatePresence(from, Presence.composing)
-				reply(mess.wait)
 				 data = fs.readFileSync('./src/asupan.js');
                  jsonData = JSON.parse(data);
                  randIndex = Math.floor(Math.random() * jsonData.length);
                  randKey = jsonData[randIndex];
-                 asupan = await getBuffer(randKey.result)
-                 selfb.sendMessage(from, asupan, video, {quoted: mek, caption: '\`\`\`ASUPAN GAN:V\`\`\`'})
+                hasil = await getBuffer(randKey.result)
+                selfb.sendMessage(from, hasil, video, {quoted: mek, caption: '\`\`\`ASUPAN GAN! :v\`\`\`'}) 
 				break
 				case 'picture':
 					var imgbb = require('imgbb-uploader')
@@ -990,12 +955,6 @@ await selfb.toggleDisappearingMessages(from, 0)
 				}
 				teks = `Total : ${totalchat.length}`
 				selfb.sendMessage(from, teks, MessageType.text, selepbot)
-				break
-               case 'sticktag': case 'stickertag':
-				if (!isQuotedSticker) return aqul.reply(from, `Reply sticker dengan caption *${prefix}stickertag*`, mek)
-				let encmediai = JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo
-				let mediai = await selfb.downloadMediaMessage(encmediai)
-				aqul.hideTagSticker(from, mediai)
 				break
                case 'tag':
 					var value = body.slice(4)
@@ -1667,13 +1626,6 @@ break
 					setting.prefix = prefix
 					fs.writeFileSync('./src/settings.json', JSON.stringify(setting, null, '\t'))
 					reply(`Prefix berhasil di ubah menjadi : ${prefix}`)
-					break
-				case 'setexif':
-					if (args.length < 1) return
-					aut = args[0]
-					setting.aut = aut
-					fs.writeFileSync('./src/settings.json', JSON.stringify(setting, null, '\t'))
-					reply(`Exif berhasil di ubah menjadi : ${aut}`)
 					break
 					
 					case 'bahasa':
