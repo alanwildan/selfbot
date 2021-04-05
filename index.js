@@ -11,8 +11,6 @@ const {
 const { color, bgcolor } = require('./lib/color')
 const { wait, simih, getBuffer, h2k, generateMessageID, getGroupAdmins, getRandom, banner, start, info, success, close } = require('./lib/functions')
 const { fetchJson, fetchText } = require('./lib/fetcher')
-const { uploadImages } = require('./src/fetcher')
-const { custom, random } = require('./src/meme')
 const { recognize } = require('./lib/ocr')
 const fs = require('fs')
 const emojiUnicode = require('emoji-unicode') 
@@ -29,14 +27,13 @@ const apikey = setting.apiKey // get on https://leyscoders-api.herokuapp.com
 const lolkey = setting.lol // get on http://lolhuman.herokuapp.com
 const vinz = setting.vinz //get on https://api.zeks.xyz
 const nomer = setting.ownerNumber
-const nomer2 = setting.nomer2
 blocked = []
 public = false
 const vcard = 'BEGIN:VCARD\n' 
             + 'VERSION:3.0\n' 
             + 'FN:ME? \n' 
             + 'ORG:INI AKU;\n' 
-            + 'TEL;type=CELL;type=VOICE;waid=${nomer}:${nomer2}\n' // NOMER HP LU
+            + 'TEL;type=CELL;type=VOICE;waid=6285793432434:+62 857-9343-2434\n' // NOMER HP LU SUU!! 
             + 'END:VCARD'
             
 /********** FUNCTION ***************/
