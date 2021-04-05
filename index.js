@@ -28,13 +28,15 @@ const exif = setting.exif
 const apikey = setting.apiKey // get on https://leyscoders-api.herokuapp.com
 const lolkey = setting.lol // get on http://lolhuman.herokuapp.com
 const vinz = setting.vinz //get on https://api.zeks.xyz
+const nomer = setting.ownerNumber
+const nomer2 = setting.nomer2
 blocked = []
 public = false
 const vcard = 'BEGIN:VCARD\n' 
             + 'VERSION:3.0\n' 
             + 'FN:ME? \n' 
-            + 'ORG:INI ALAN;\n' 
-            + 'TEL;type=CELL;type=VOICE;waid=6285793432434:+62 857-9343-2434\n' // NOMER HP LU
+            + 'ORG:INI AKU;\n' 
+            + 'TEL;type=CELL;type=VOICE;waid=${nomer}:${nomer2}\n' // NOMER HP LU
             + 'END:VCARD'
             
 /********** FUNCTION ***************/
@@ -62,7 +64,7 @@ async function starts() {
 	selfb.logger.level = 'warn'
 	console.log(banner.string)
 	selfb.on('qr', () => {
-		console.log(color('[','white'), color('!','red'), color(']','white'), color(' Scan the qr code above'))
+		console.log(color('[','white'), color('!','red'), color(']','white'), color(' SCAN QR INI!!'))
 	})
 
 	fs.existsSync('./self-bot.json') && selfb.loadAuthInfo('./self-bot.json')
@@ -249,15 +251,6 @@ function speedText(speed) {
 selfb.sendMessage(from, pesan, tipe, {quoted: { key: { fromMe: false, participant: `${target}`, ...(from ? { remoteJid: from } : {}) }, message: { conversation: `${target2}` }}})
   }
 		
-		const hideTagSticker = async function(from, sticker){
-	let anu = await selfb.groupMetadata(from)
-	let members = anu.participants
-	let ane = []
-	for (let i of members){
-		ane.push(i.jid)
-	}
-	selfb.sendMessage(from, sticker, MessageType.sticker, {contextInfo: {"mentionedJid": ane}})
-}
   
 
 			colors = ['red','white','black','blue','yellow','green']
@@ -327,22 +320,6 @@ selfb.sendMessage(from, pesan, tipe, {quoted: { key: { fromMe: false, participan
                   if (budy.includes(`Assalamu'alaikum`)) {
                   reply(`Waalaikumsalam`)
                   }
-                  if (budy.match('tobat')){
-   var Hmm = fs.readFileSync('./src/audio/tobat.mp3');
-selfb.sendMessage(from, Hmm, audio, { mimetype: 'audio/mp4', quoted : freply,ptt: true })
-}
-if (budy.match('Tobat')){
-   var Hmm = fs.readFileSync('./src/audio/tobat.mp3');
-selfb.sendMessage(from, Hmm, audio, { mimetype: 'audio/mp4', quoted : freply, ptt: true })
-}
-if (budy.match('kontol')){
-   var Hmm = fs.readFileSync('./src/audio/kontol.mp3');
-selfb.sendMessage(from, Hmm, audio, { mimetype: 'audio/mp4', quoted : freply,ptt: true })
-}
-if (budy.match('Kontol')){
-   var Hmm = fs.readFileSync('./src/audio/kontol.mp3');
-selfb.sendMessage(from, Hmm, audio, { mimetype: 'audio/mp4', quoted : freply, ptt: true })
-}
 /********** END FUNCTION ***************/
 
 			
@@ -371,7 +348,7 @@ ${wuuw}
 ┣ ❏ *${prefix}addvideo*
 ┣ ❏ *${prefix}getsticker* 
 ┣ ❏ *${prefix}getvn* 
-┣ ❏ *${prefix}tubug* [reply audio]
+┣ ❏ *${prefix}tobug* [reply audio]
 ┣ ❏ *${prefix}slow* [reply audio]
 ┣ ❏ *${prefix}tupai* [reply audio]
 ┣ ❏ *${prefix}blub* [reply audio]
