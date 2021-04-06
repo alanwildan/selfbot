@@ -21,8 +21,8 @@
 
 ```bash
 $ termux-setup-storage
-$ pkg install update && pkg install upgrade
-$ pkg install git -y && pkg install ffmpeg -y && pkg install bash -y && pkg install nodejs-y
+$ pkg update && pkg upgrade
+$ pkg install git -y && pkg install ffmpeg -y && pkg install bash -y && pkg install nodejs -y
 $ git clone https://github.com/alanwildan/selfbot
 $ cd selfbot
 $ bash install.sh
