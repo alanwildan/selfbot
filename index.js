@@ -344,7 +344,6 @@ ${wuuw}
 ┃
 ┣ ❏ *${prefix}sticker* [reply img/gif/mp4]
 ┣ ❏ *${prefix}stik* [link]
-┣ ❏ *${prefix}gif* [link]
 ┣ ❏ *${prefix}ttp* [text]
 ┣ ❏ *${prefix}attp* [text]
 ┣ ❏ *${prefix}take* [reply sticker]
@@ -398,10 +397,6 @@ ${wuuw}
 ┃
 ┗━━━━《 SelfBot Recode 》━━━━`, MessageType.text, {quoted: freply}, {contextInfo: { forwardingScore: 508, isForwarded: true }})
 					break 
-					case 'public':
-				public = args[0]
-			selfb.sendMessage(from, `Status:${public}`, text)
-				break
 					case 'ramadhan':
 					rahmad = `Hitung Mundur Waktu Ramadhan : \n\n ==> ${ramadhan}`
 					reply(rahmad) 
@@ -434,21 +429,7 @@ ${wuuw}
 					case 'time':
 					wuuw = `Time : ${time} ${hahh}\nDate : ${tampilTanggal}\n\nRamadhan = ${ramadhan}`
 					reply(wuuw) 
-					break
-					case 'memeimg':
-                    case 'memeimage':
-                    reply(mess.wait) 
-                    splet = body.slice(9)
-                                        const top = splet.split('|')[0];
-                                        const bottom = splet.split('|')[1];
-                            if ((isMedia && !mek.message.videoMessage || isQuotedImage) && args.length > 0) {
-                                const encmedia = isQuotedImage ? JSON.parse(JSON.stringify(mek).replace("quotedM","m")).message.extendedTextMessage.contextInfo : mek
-                                const media = await selfb.downloadMediaMessage(encmedia, 'buffer')
-                                const getUrl = await uploadImages(media, false)
-                                const memeRes = await custom(getUrl, top, bottom)
-                                selfb.sendMessage(from, memeRes, image, {quoted: mek })
-                            }
-                            break
+				   break
                   case 'fordward':
 	   selfb.sendMessage(from, `${body.slice(10)}`, MessageType.text, {contextInfo: { forwardingScore: 508, isForwarded: true }}) 
            break
@@ -482,7 +463,6 @@ sweet = body.slice(9)
 					selfb.sendMessage(from, teks, MessageType.text, {quoted: freply})
 					break
 					case 'stik':
-                                        case 'gif':
 					url = body.slice(6) 
 					ranp = getRandom('.png')
 rano = getRandom('.webp')
