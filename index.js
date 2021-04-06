@@ -482,6 +482,7 @@ sweet = body.slice(9)
 					selfb.sendMessage(from, teks, MessageType.text, {quoted: freply})
 					break
 					case 'stik':
+                                        case 'gif':
 					url = body.slice(6) 
 					ranp = getRandom('.png')
 rano = getRandom('.webp')
@@ -494,21 +495,7 @@ rano = getRandom('.webp')
 						
 						fs.unlinkSync(rano)
 					})
-break
-					case 'gif':
-					url = body.slice(5) 
-					ranp = getRandom('.png')
-rano = getRandom('.webp')
-					exec(`wget ${url} -O ${ranp} && ffmpeg -i ${ranp} -vcodec libwebp -filter:v fps=fps=15 -lossless 1 -loop 0 -preset default -an -vsync 0 -s 512:512 ${rano}`, (err) => {
-	if (err) return reply('Error!')
-						fs.unlinkSync(ranp)
-						
-						buffer2 = fs.readFileSync(rano)
-						costum(buffer2, sticker, tescuk, `Sticker`)
-						
-						fs.unlinkSync(rano)
-					})
-break
+break 
                     case 'fitnah':
 					var gh = body.slice(8)
 					mentioned = mek.message.extendedTextMessage.contextInfo.mentionedJid
