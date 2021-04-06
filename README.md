@@ -3,6 +3,7 @@
 </p>
 <br>
 <p align="center">
+</p>
 <a href="#"><img title="SELFBOT-TERMUX" src="https://img.shields.io/badge/-SELFBOT--TERMUX-green?colorA=%23ff0000&colorB=%23017e40&style=for-the-badge"></a>
 </p>
 <a href="https://github.com/alanwildan"><img title="Author" src="https://img.shields.io/badge/ALAN-FREE%20SELF%20BOT-green)"></a>
@@ -10,6 +11,7 @@
 <p align="center">
 </p>
 <p align="center">
+</p>
 <a href="https://github.com/alanwildan?tab=followers"><img title="Followers" src="https://img.shields.io/github/followers/alanwildan?color=green&label=Follow&style=social"></a>
 </p>
 <a href="https://github.com/alanwildan/selfbot/stargazers/"><img title="Stars" src="https://img.shields.io/github/followers/alanwildan?color=green&label=STARS&style=social"></a>
