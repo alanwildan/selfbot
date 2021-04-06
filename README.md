@@ -1,5 +1,5 @@
 ## <img src="https://github.com/TheDudeThatCode/TheDudeThatCode/blob/master/Assets/Hi.gif" width="29px"> I'AM AlanWildan
-<a href="https://github.com/alanwildan"><img src="https://raw.githubusercontent.com/alanwildan/selfbot/main/src/smile.png"></a>
+<img src="https://media.giphy.com/media/836HiJc7pgzy8iNXCn/giphy.gif" width="320">
 </p>
 <br>
 <p align="center">
