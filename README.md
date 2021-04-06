@@ -4,9 +4,6 @@
 <br>
 <p align="center">
 <a href="#"><img title="SELFBOT-TERMUX" src="https://img.shields.io/badge/-SELFBOT--TERMUX-green?colorA=%23ff0000&colorB=%23017e40&style=for-the-badge"></a>
-</p>
-<p align="center">
-<a href="https://github.com/alanwildan"><img title="Author" src="https://img.shields.io/badge/AUTHOR-ALAN-orange?style=for-the-badge&logo=github"></a>
 <a href="https://github.com/alanwildan"><img title="Author" src="https://img.shields.io/badge/ALAN-FREE%20SELF%20BOT-green)"></a>
 </p>
 <p align="center">
