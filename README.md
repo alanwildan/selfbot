@@ -3,11 +3,8 @@
    <img src="https://media.giphy.com/media/836HiJc7pgzy8iNXCn/giphy.gif" width="320">
 </p>
 <br>
-<p align="center">
 <a href="https://github.com/alanwildan"><img title="Author" src="https://img.shields.io/badge/ALAN-FREE%20SELF%20BOT-green)"></a>
-<p align="center">
 </p>
-<p align="center">
 <a href="https://github.com/alanwildan?tab=followers"><img title="Followers" src="https://img.shields.io/github/followers/alanwildan?color=green&label=Follow&style=social"></a>
 <a href="https://github.com/alanwildan/selfbot/stargazers/"><img title="Stars" src="https://img.shields.io/github/followers/alanwildan?color=green&label=STARS&style=social"></a>
 <a href="https://github.com/alanwildan/selfbot/network/members"><img title="Forks" src="https://img.shields.io/github/followers/alanwildan?color=green&label=FORKS&style=social"></a>
