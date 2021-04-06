@@ -1,4 +1,4 @@
-<a href="https://github.com/alanwildan"><img src="https://i.top4top.io/p_1905c5lo60.png"></a>
+<a href="https://github.com/alanwildan"><img src="https://raw.githubusercontent.com/alanwildan/selfbot/main/src/smile.png"></a>
 </p>
 <br>
 
