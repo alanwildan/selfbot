@@ -6,6 +6,9 @@
 <a href="#"><img title="SELFBOT-TERMUX" src="https://img.shields.io/badge/-SELFBOT--TERMUX-green?colorA=%23ff0000&colorB=%23017e40&style=for-the-badge"></a>
 </p>
 <p align="center">
+<a href="https://github.com/alanwildan"><img title="Author" src="https://img.shields.io/badge/AUTHOR-ALAN-orange?style=for-the-badge&logo=github"></a>
+</p>
+<p align="center">
 <a href="https://github.com/alanwildan/followers"><img title="Followers" src="https://img.shields.io/github/followers/Fxc7?color=blue&style=flat-square"></a>
 <a href="https://github.com/alanwildan/selfbot/stargazers/"><img title="Stars" src="https://img.shields.io/github/stars/Fxc7/termux-bot-wa?color=red&style=flat-square"></a>
 <a href="https://github.com/alanwildan/selfbot/network/members"><img title="Forks" src="http://img.shields.io/github/forks/Fxc7/termux-bot-wa?color=red&style=flat-square"></a>
