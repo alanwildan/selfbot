@@ -8,6 +8,9 @@
 <img src="https://media.giphy.com/media/836HiJc7pgzy8iNXCn/giphy.gif" width="320">
 </p>
 <br>
+<p align="center">
+<a href="#"><img title="SELFBOT-TERMUX" src="https://img.shields.io/badge/-SELFBOT--TERMUX-green?colorA=%23ff0000&colorB=%23017e40&style=for-the-badge"></a>
+</p>
 
 # Setting
 
