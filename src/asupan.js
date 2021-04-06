@@ -76,5 +76,5 @@
 {"result": "http://sansekai.my.id/ptl_repost/123500665_2836118109966517_3102834591166602919_n.mp4"}, 
 {"result": "http://sansekai.my.id/ptl_repost/123521796_357984642134434_1802311042714502909_n.mp4"}, 
 {"result": "http://sansekai.my.id/ptl_repost/123542025_2845611382343239_831943804862462614_n.mp4"}, 
-{"result": "http://sansekai.my.id/ptl_repost/123556362_1280079069021214_3345337485962200490_n.mp4"]
+{"result": "http://sansekai.my.id/ptl_repost/123556362_1280079069021214_3345337485962200490_n.mp4"}
 ]
