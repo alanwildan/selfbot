@@ -1,7 +1,7 @@
 ## <img src="https://github.com/TheDudeThatCode/TheDudeThatCode/blob/master/Assets/Hi.gif" width="29px"> I'AM AlanWildan
    <img src="https://media.giphy.com/media/836HiJc7pgzy8iNXCn/giphy.gif" width="320">
 
-## Setting
+# Setting
 
 * Setting prefix, number, & apikey : [`click`](https://github.com/alanwildan/selfbot/blob/main/src/settings.json)
 * Setting thumbnile freply : [`click`](https://github.com/alanwildan/selfbot/tree/main/image) 
