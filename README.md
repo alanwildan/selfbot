@@ -1,16 +1,5 @@
 ## <img src="https://github.com/TheDudeThatCode/TheDudeThatCode/blob/master/Assets/Hi.gif" width="29px"> I'AM AlanWildan
-   <a href="#"><img title="SELFBOT-TERMUX" src="https://img.shields.io/badge/-SELFBOT--TERMUX-green?colorA=%23ff0000&colorB=%23017e40&style=for-the-badge"></a>
    <img src="https://media.giphy.com/media/836HiJc7pgzy8iNXCn/giphy.gif" width="320">
-</p>
-<br>
-<a href="https://github.com/alanwildan"><img title="Author" src="https://img.shields.io/badge/ALAN-FREE%20SELF%20BOT-green)"></a>
-</p>
-<a href="https://github.com/alanwildan?tab=followers"><img title="Followers" src="https://img.shields.io/github/followers/alanwildan?color=green&label=Follow&style=social"></a>
-<a href="https://github.com/alanwildan/selfbot/stargazers/"><img title="Stars" src="https://img.shields.io/github/followers/alanwildan?color=green&label=STARS&style=social"></a>
-<a href="https://github.com/alanwildan/selfbot/network/members"><img title="Forks" src="https://img.shields.io/github/followers/alanwildan?color=green&label=FORKS&style=social"></a>
-<a href="https://github.com/alanwildan/selfbot/watchers"><img title="Watching" src="https://img.shields.io/github/followers/alanwildan?color=green&label=WACHING&style=sociale"></a>
-<div align="center">
-
 ## Setting
 
 * Setting prefix, number, & apikey : [`click`](https://github.com/alanwildan/selfbot/blob/main/src/settings.json)
